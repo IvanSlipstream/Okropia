@@ -57,7 +57,7 @@ public class City extends FieldObject {
     }
 
     @Override
-    public void onSelect(Clicker.CommandState state) {
+    public void onSelect(Clicker clicker, Clicker.CommandState state) {
         L.d(getClass(), "City selected");
     }
 

@@ -35,7 +35,7 @@ public abstract class FieldObject implements Parcelable {
 
     public abstract void setDefaultAttributes();
 
-    public abstract void onSelect(Clicker.CommandState commandState);
+    public abstract void onSelect(Clicker clicker, Clicker.CommandState commandState);
 
     /**
      * Calculate location coordinates at the canvas
