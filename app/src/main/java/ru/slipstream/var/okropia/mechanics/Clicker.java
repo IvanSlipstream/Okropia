@@ -5,7 +5,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.slipstream.var.okropia.L;
-import ru.slipstream.var.okropia.field.City;
 import ru.slipstream.var.okropia.field.FieldObject;
 import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.field.Location;
@@ -21,7 +20,7 @@ public class Clicker implements View.OnTouchListener {
     private FieldView mFieldView;
 
     public enum CommandState {
-        IDLE_TO_SELECT
+        IDLE
     }
 
     public Clicker(FieldView fieldView) {
@@ -67,7 +66,7 @@ public class Clicker implements View.OnTouchListener {
                 }
         }
         if (target != null) {
-            target.onSelect(CommandState.IDLE_TO_SELECT);
+            target.onSelect(this, CommandState.IDLE);
             return true;
         }
         return false;
