@@ -35,9 +35,14 @@ public class City extends FieldObject {
 
     public City(Location location, Bundle attributes) {
         super(location, attributes);
-        this.mSize = SPECIFIC_RADIUS * attributes.getLong(AttributeKeys.POPULATION);
+        adjustSize(attributes);
         this.mAngle = 0;
     }
+
+    private void adjustSize(Bundle attributes) {
+        this.mSize = SPECIFIC_RADIUS * attributes.getLong(AttributeKeys.POPULATION);
+    }
+
     public City(Parcel parcel) {
         super(parcel);
     }
@@ -58,6 +63,7 @@ public class City extends FieldObject {
 
     @Override
     public void draw(Canvas canvas, float scale, Location pivot) {
+        adjustSize(mAttributes);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         boolean affiliation = mAttributes.getBoolean(AttributeKeys.AFFILIATION);
         paint.setColor(affiliation ? Color.BLUE : Color.DKGRAY);

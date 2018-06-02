@@ -1,5 +1,6 @@
 package ru.slipstream.var.okropia.mechanics;
 
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -8,6 +9,7 @@ import ru.slipstream.var.okropia.field.City;
 import ru.slipstream.var.okropia.field.FieldObject;
 import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.field.Location;
+import ru.slipstream.var.okropia.views.FieldView;
 
 /**
  * Created by Slipstream-DESKTOP on 01.03.2018.
@@ -16,13 +18,15 @@ import ru.slipstream.var.okropia.field.Location;
 public class Clicker implements View.OnTouchListener {
 
     private FieldState mFieldState;
+    private FieldView mFieldView;
 
     public enum CommandState {
         IDLE_TO_SELECT
     }
 
-    public Clicker(FieldState state) {
-        this.mFieldState = state;
+    public Clicker(FieldView fieldView) {
+        this.mFieldView = fieldView;
+        this.mFieldState = fieldView.getState();
     }
 
     @Override
@@ -37,8 +41,8 @@ public class Clicker implements View.OnTouchListener {
         float touchX = motionEvent.getX(0) - view.getX();
         float touchY = motionEvent.getY(0) - view.getY();
 
-        Location pivot = mFieldState.getPivot();
-        float scale = mFieldState.getCurrentScale();
+        Location pivot = mFieldView.getPivot();
+        float scale = mFieldView.getCurrentScale();
 
         float locationX = ( touchX / view.getWidth() - 0.5f ) / scale + pivot.x;
         float locationY = ( touchY / view.getHeight() - 0.5f ) / scale + pivot.y;
@@ -52,10 +56,11 @@ public class Clicker implements View.OnTouchListener {
         switch (motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
                 if (mFieldState != null) {
-                    for (City city :
-                            mFieldState.getCities()) {
-                        if (Location.distance(city.getLocation(), targetLocation) <= city.getSize()){
-                            target = city;
+                    SparseArray fieldObjects = mFieldState.getFieldObjects();
+                    for (int i = 0;i < fieldObjects.size();i++) {
+                        FieldObject fieldObject = (FieldObject) fieldObjects.get(fieldObjects.keyAt(i));
+                        if (Location.distance(fieldObject.getLocation(), targetLocation) <= fieldObject.getSize()){
+                            target = fieldObject;
                             break;
                         }
                     }

@@ -8,22 +8,26 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.util.SparseArray;
 
 import ru.slipstream.var.okropia.L;
-import ru.slipstream.var.okropia.field.City;
 import ru.slipstream.var.okropia.field.FieldState;
+import ru.slipstream.var.okropia.mechanics.Trigger;
+import ru.slipstream.var.okropia.mechanics.TriggerExecutor;
 
 public class OkropiaServer extends Service {
 
     public static final int CODE_USER_COMMAND = 1;
     public static final int CODE_REQUEST_STATE = 2;
     public static final int CODE_PROVIDE_STATE = 3;
+    public static final long NANO = 1000000000;
 
     public static final String KEY_STATE = "state";
 
     private FieldStateUpdatingThread mThread;
     private long mLastUpdateTime;
     private FieldState mState;
+    private TriggerExecutor mTriggerExecutor = new TriggerExecutor();
 
     private final Object lock = new Object();
 
@@ -47,12 +51,12 @@ public class OkropiaServer extends Service {
 
     private void timelyUpdateFieldState(long nanoseconds){
         synchronized (lock) {
-            float rate = 0.0003f;
-            City city = mState.getCities().get(0);
-            Bundle bundle = city.getAttributes();
-            long population = bundle.getLong(City.AttributeKeys.POPULATION);
-            population += rate * nanoseconds;
-            bundle.putLong(City.AttributeKeys.POPULATION, population);
+            // run all timed triggers
+            SparseArray<Trigger> triggers = mTriggerExecutor.getTriggers();
+            for (int i=0;i<triggers.size();i++){
+                Trigger trigger = triggers.get(triggers.keyAt(i));
+                trigger.run(mState, (float) nanoseconds / NANO);
+            }
         }
     }
 
@@ -67,6 +71,7 @@ public class OkropiaServer extends Service {
         L.d(getClass(), "run on create");
         mState = new FieldState();
         mState.init();
+        mTriggerExecutor.initTriggers(mState);
         Runnable r = new Runnable() {
             @Override
             public void run() {

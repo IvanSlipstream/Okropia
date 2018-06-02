@@ -56,12 +56,10 @@ public class PinchLayout extends FrameLayout
         float scaleFactor = scaleGestureDetector.getScaleFactor();
         mScale *= scaleFactor;
         FieldView fieldView = findViewById(R.id.fv_main);
-        mScale = Math.min(FieldState.MAX_SCALE, Math.max(mScale, FieldState.MIN_SCALE));
+        mScale = Math.min(FieldView.MAX_SCALE, Math.max(mScale, FieldView.MIN_SCALE));
         L.d(getClass(), "Setting scale " + mScale + ", thread id: " + Thread.currentThread().getId());
         if (fieldView != null) {
-            FieldState fieldState = fieldView.getState();
-            fieldState.setCurrentScale(mScale);
-            fieldView.updateFieldState(fieldState);
+            fieldView.setCurrentScale(mScale);
         }
         return true;
     }
@@ -95,11 +93,9 @@ public class PinchLayout extends FrameLayout
                         }
                         FieldView fieldView = findViewById(R.id.fv_main);
                         if (fieldView != null) {
-                            FieldState fieldState = fieldView.getState();
-                            Location location = fieldState.getPivot();
+                            Location location = fieldView.getPivot();
                             location.translate(deltaX, deltaY);
-                            fieldState.setPivot(location);
-                            fieldView.updateFieldState(fieldState);
+                            fieldView.setPivot(location);
                         }
                     }
                 case MotionEvent.ACTION_DOWN:

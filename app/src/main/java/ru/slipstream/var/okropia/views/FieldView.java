@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 
 import ru.slipstream.var.okropia.L;
 import ru.slipstream.var.okropia.field.FieldState;
+import ru.slipstream.var.okropia.field.Location;
 import ru.slipstream.var.okropia.mechanics.Clicker;
 
 /**
@@ -26,10 +27,16 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String KEY_FIELD_STATE = "field_state";
 
+    public static final float MIN_SCALE = 1f;
+    public static final float MAX_SCALE = 10f;
+    public static final float BORDER_SIZE = 0.1f;
+
     private DrawThread mThread;
     private FieldState mState;
     private Clicker mClicker;
     private Handler mHandler;
+    private Location mPivot = new Location(0.5f, 0.5f);
+    private float mCurrentScale = 1f;
 
     public FieldView(Context context) {
         super(context);
@@ -48,7 +55,7 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
         mState = new FieldState();
         mState.init();
         // handle user clicks
-        mClicker = new Clicker(mState);
+        mClicker = new Clicker(this);
         setOnTouchListener(mClicker);
     }
 
@@ -67,6 +74,24 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public void setCurrentScale(float currentScale) {
+        this.mCurrentScale = Math.min(MAX_SCALE, Math.max(currentScale, MIN_SCALE));
+    }
+
+    public void setPivot(Location pivot) {
+        float x = Math.min(1f - BORDER_SIZE, Math.max(pivot.x, BORDER_SIZE));
+        float y = Math.min(1f - BORDER_SIZE, Math.max(pivot.y, BORDER_SIZE));
+        this.mPivot = new Location(x, y);
+    }
+
+    public Location getPivot() {
+        return mPivot;
+    }
+
+    public float getCurrentScale() {
+        return mCurrentScale;
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         mThread = new DrawThread(surfaceHolder);
@@ -79,12 +104,12 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
                     mThread.getLooper().quit();
                 }
                 mState = message.getData().getParcelable(KEY_FIELD_STATE);
-                L.d(getClass(), "message received");
+                L.d(Handler.class, "message received");
                 Canvas canvas = null;
                 try {
                     canvas = mThread.mHolder.lockCanvas();
                     if (canvas != null) {
-                        mState.draw(canvas);
+                        mState.draw(canvas, mCurrentScale, mPivot);
                     }
                 } finally {
                     if (canvas != null) {

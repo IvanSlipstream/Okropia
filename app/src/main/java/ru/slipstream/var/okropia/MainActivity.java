@@ -118,9 +118,6 @@ public class MainActivity extends AppCompatActivity {
                         FieldState fieldState = data.getParcelable(OkropiaServer.KEY_STATE);
                         if (fieldState != null) {
                             mFieldView.updateFieldState(fieldState);
-                            City city = fieldState.getCities().get(0);
-                            L.d(MainActivity.class, "population: "
-                                    +String.valueOf(city.getAttributes().getLong(City.AttributeKeys.POPULATION)));
                         }
                     }
             }
