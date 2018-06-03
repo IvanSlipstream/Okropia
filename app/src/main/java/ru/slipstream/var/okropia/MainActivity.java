@@ -17,10 +17,11 @@ import android.widget.Switch;
 import ru.slipstream.var.okropia.field.City;
 import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.layout.PinchLayout;
+import ru.slipstream.var.okropia.mechanics.CommandReceiver;
 import ru.slipstream.var.okropia.server.OkropiaServer;
 import ru.slipstream.var.okropia.views.FieldView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CommandReceiver {
 
     private Messenger mOutMessenger;
     private Messenger mInMessenger;
@@ -59,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        FieldView fieldView = findViewById(R.id.fv_main);
-//        FieldState fieldState = new FieldState();
-//        fieldState.init();
-//        fieldView.updateFieldState(fieldState);
         Switch sw = findViewById(R.id.sw_resize);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -99,6 +96,23 @@ public class MainActivity extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
+    }
+
+    @Override
+    public boolean sendUserCommand(int commandId, Bundle parameters) {
+        if (mOutMessenger != null){
+            try {
+                Message message = Message.obtain();
+                message.what = OkropiaServer.CODE_USER_COMMAND;
+                message.arg1 = commandId;
+                mOutMessenger.send(message);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private static class ClientMessageHandler extends Handler {

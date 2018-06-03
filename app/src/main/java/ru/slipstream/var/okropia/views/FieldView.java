@@ -18,6 +18,7 @@ import ru.slipstream.var.okropia.L;
 import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.field.Location;
 import ru.slipstream.var.okropia.mechanics.Clicker;
+import ru.slipstream.var.okropia.mechanics.CommandReceiver;
 
 /**
  * Created by Slipstream-DESKTOP on 04.02.2018.
@@ -37,14 +38,27 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
     private Handler mHandler;
     private Location mPivot = new Location(0.5f, 0.5f);
     private float mCurrentScale = 1f;
+    private CommandReceiver mCommandReceiver;
 
     public FieldView(Context context) {
         super(context);
+        if (context instanceof CommandReceiver){
+            mCommandReceiver = (CommandReceiver) context;
+        } else {
+            throw new UnsupportedOperationException("Context must implement "
+                    +CommandReceiver.class.getSimpleName());
+        }
         init();
     }
 
     public FieldView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        if (context instanceof CommandReceiver){
+            mCommandReceiver = (CommandReceiver) context;
+        } else {
+            throw new UnsupportedOperationException("Context must implement "
+                    +CommandReceiver.class.getSimpleName());
+        } // TODO: 03.06.2018 refactor copy-paste code
         init();
     }
 
@@ -57,6 +71,10 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
         // handle user clicks
         mClicker = new Clicker(this);
         setOnTouchListener(mClicker);
+    }
+
+    public boolean sendCommand(int commandId, Bundle parameters){
+        return mCommandReceiver.sendUserCommand(commandId, parameters);
     }
 
     public FieldState getState() {
