@@ -7,6 +7,7 @@ import ru.slipstream.var.okropia.L;
 import ru.slipstream.var.okropia.field.City;
 import ru.slipstream.var.okropia.field.Clock;
 import ru.slipstream.var.okropia.field.FieldState;
+import ru.slipstream.var.okropia.mechanics.triggers.MainTrigger;
 
 public class TriggerExecutor {
 
@@ -26,27 +27,7 @@ public class TriggerExecutor {
         int lastTriggerId = 0;
         // main trigger
         parameters.putInt("city_id", 1);
-        trigger = new Trigger() {
-            @Override
-            public void onExecute(FieldState state) {
-                Bundle localParameters = mParameters.get(this.mClockId);
-                if (localParameters != null) {
-                    float rate = 30f;
-                    int i = localParameters.getInt("city_id");
-                    City city = (City) state.getFieldObjects().get(i);
-                    Bundle bundle = city.getAttributes();
-                    long population = bundle.getLong(City.AttributeKeys.POPULATION);
-                    population += rate;
-                    bundle.putLong(City.AttributeKeys.POPULATION, population);
-                    L.d(getClass(), "population: "+population);
-                }
-            }
-
-            @Override
-            public boolean onCheckConditions(FieldState state) {
-                return true;
-            }
-        };
+        trigger = new MainTrigger(this);
         clock = new Clock(true, 1);
         clockId = state.addFieldObject(clock);
         mParameters.put(clockId, parameters);
@@ -56,5 +37,9 @@ public class TriggerExecutor {
 
     public SparseArray<Trigger> getTriggers() {
         return mTriggers;
+    }
+
+    public SparseArray<Bundle> getParameters() {
+        return mParameters;
     }
 }

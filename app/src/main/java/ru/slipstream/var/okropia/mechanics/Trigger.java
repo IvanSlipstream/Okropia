@@ -8,7 +8,7 @@ import ru.slipstream.var.okropia.field.FieldState;
 
 public abstract class Trigger {
 
-    int mClockId;
+    protected int mClockId;
 
     public abstract void onExecute(FieldState state);
 
