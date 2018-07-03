@@ -75,8 +75,11 @@ public class FieldState implements Parcelable {
     public void draw(Canvas canvas, float scale, Location pivot) {
         canvas.drawColor(Color.LTGRAY);
         for (int i = 0;i < mFieldObjects.size();i++) {
-            FieldObject fieldObject = (FieldObject) mFieldObjects.get(mFieldObjects.keyAt(i));
-            fieldObject.draw(canvas, scale, pivot);
+            FieldObject renderingObject = (FieldObject) mFieldObjects.get(mFieldObjects.keyAt(i));
+            if (renderingObject instanceof Renderable) {
+                ((Renderable) renderingObject).draw(canvas, scale, pivot);
+            }
+
         }
     }
 

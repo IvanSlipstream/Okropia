@@ -24,18 +24,8 @@ public class Clock extends FieldObject {
     }
 
     @Override
-    public void draw(Canvas canvas, float scale, Location p) {
-        // this object is invisible
-    }
-
-    @Override
     public void setDefaultAttributes() {
         // no default attributes
-    }
-
-    @Override
-    public void onSelect(Clicker.CommandState commandState) {
-
     }
 
     public int checkClock(float decrementalTime){

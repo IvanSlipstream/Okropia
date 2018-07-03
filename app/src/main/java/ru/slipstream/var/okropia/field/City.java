@@ -16,7 +16,8 @@ import ru.slipstream.var.okropia.mechanics.Clicker;
  * Created by Slipstream-DESKTOP on 18.02.2018.
  */
 
-public class City extends FieldObject {
+public class City extends FieldObject
+    implements Renderable, Clickable {
 
     private static final float SPECIFIC_RADIUS = 0.00005f;
     private static final float INTERNAL_RADIUS_MIN = 0.54f;

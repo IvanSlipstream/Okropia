@@ -31,11 +31,7 @@ public abstract class FieldObject implements Parcelable {
         this.mAttributes.putAll(attributes);
     }
 
-    public abstract void draw(Canvas canvas, float scale, Location p);
-
     public abstract void setDefaultAttributes();
-
-    public abstract void onSelect(Clicker clicker, Clicker.CommandState commandState);
 
     /**
      * Calculate location coordinates at the canvas

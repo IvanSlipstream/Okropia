@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.slipstream.var.okropia.L;
+import ru.slipstream.var.okropia.field.Clickable;
 import ru.slipstream.var.okropia.field.FieldObject;
 import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.field.Location;
@@ -58,7 +59,8 @@ public class Clicker implements View.OnTouchListener {
                     SparseArray fieldObjects = mFieldState.getFieldObjects();
                     for (int i = 0;i < fieldObjects.size();i++) {
                         FieldObject fieldObject = (FieldObject) fieldObjects.get(fieldObjects.keyAt(i));
-                        if (Location.distance(fieldObject.getLocation(), targetLocation) <= fieldObject.getSize()){
+                        if (Location.distance(fieldObject.getLocation(), targetLocation) <= fieldObject.getSize()
+                                && fieldObject instanceof Clickable){
                             target = fieldObject;
                             break;
                         }
@@ -66,7 +68,7 @@ public class Clicker implements View.OnTouchListener {
                 }
         }
         if (target != null) {
-            target.onSelect(this, CommandState.IDLE);
+            ((Clickable) target).onSelect(this, CommandState.IDLE);
             return true;
         }
         return false;
