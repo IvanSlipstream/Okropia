@@ -27,7 +27,6 @@ public class MainTrigger extends Trigger {
             long population = cityAttributes.getLong(City.AttributeKeys.POPULATION);
             population += rate;
             cityAttributes.putLong(City.AttributeKeys.POPULATION, population);
-            L.d(getClass(), "population: "+population);
         }
     }
 

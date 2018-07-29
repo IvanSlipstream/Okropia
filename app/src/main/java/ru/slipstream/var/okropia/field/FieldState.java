@@ -1,5 +1,6 @@
 package ru.slipstream.var.okropia.field;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Parcelable;
 import android.util.SparseArray;
 
 import ru.slipstream.var.okropia.L;
+import ru.slipstream.var.okropia.mechanics.BalanceDb;
 
 /**
  * Created by Slipstream-DESKTOP on 11.02.2018.
@@ -15,7 +17,7 @@ import ru.slipstream.var.okropia.L;
 
 public class FieldState implements Parcelable {
 
-    private SparseArray<Object> mFieldObjects;
+    private SparseArray<Object> mFieldObjects = new SparseArray<>();
     private int mLastId = 0;
 
     public FieldState() {
@@ -38,21 +40,12 @@ public class FieldState implements Parcelable {
         }
     };
 
-    public void init() {
+    public void init(BalanceDb db) {
         L.d(getClass(), "Initializing field");
-        L.d(getClass(), "Adding cities");
-        mFieldObjects = new SparseArray<>();
-        Bundle bundle = new Bundle();
-        bundle.putFloat(City.AttributeKeys.LOYALTY, 0.7f);
-        bundle.putLong(City.AttributeKeys.POPULATION, 1900);
-        bundle.putBoolean(City.AttributeKeys.AFFILIATION, true);
-        bundle.putFloat(City.AttributeKeys.WEALTH, 0.9f);
-        addFieldObject(new City(new Location(0.3f, 0.7f), bundle));
-        bundle.putBoolean(City.AttributeKeys.AFFILIATION, false);
-        bundle.putLong(City.AttributeKeys.POPULATION, 1400);
-        bundle.putFloat(City.AttributeKeys.LOYALTY, 0.3f);
-        bundle.putFloat(City.AttributeKeys.WEALTH, 0.1f);
-        addFieldObject(new City(new Location(0.6f, 0.7f), bundle));
+        SparseArray<FieldObject> loadedObjects = db.getFieldObjects();
+        for (int i = 0; i < loadedObjects.size(); i++){
+            addFieldObject(loadedObjects.keyAt(i), loadedObjects.valueAt(i));
+        }
         Clock mainClock = new Clock(true, 1);
         addFieldObject(mainClock);
     }
@@ -61,6 +54,13 @@ public class FieldState implements Parcelable {
         mLastId++;
         mFieldObjects.append(mLastId, object);
         return mLastId;
+    }
+
+    public void addFieldObject(int objectId, FieldObject object){
+        mFieldObjects.put(objectId, object);
+        if (objectId > mLastId){
+            mLastId = objectId;
+        }
     }
 
     private FieldObject findFieldObjectById(int id){

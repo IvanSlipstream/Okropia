@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cities>
+    <city id="1" x="0.3f" y="0.7f">
+        <attribute type="string" name="name">Великая Стена</attribute>
+        <attribute type="float" name="wealth">0.9f</attribute>
+        <attribute type="float" name="loyalty">0.7f</attribute>
+        <attribute type="long" name="population">1900</attribute>
+        <attribute type="int" name="affiliation">1</attribute>
+    </city>
+    <city id="2" x="0.6f" y="0.7f">
+        <attribute type="string" name="name">Сагайдачный</attribute>
+        <attribute type="float" name="loyalty">0.3f</attribute>
+        <attribute type="float" name="wealth">0.1f</attribute>
+        <attribute type="long" name="population">1400</attribute>
+        <attribute type="int" name="affiliation">0</attribute>
+    </city>
+</cities>

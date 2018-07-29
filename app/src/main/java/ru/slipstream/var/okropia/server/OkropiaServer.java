@@ -12,6 +12,7 @@ import android.util.SparseArray;
 
 import ru.slipstream.var.okropia.L;
 import ru.slipstream.var.okropia.field.FieldState;
+import ru.slipstream.var.okropia.mechanics.BalanceDb;
 import ru.slipstream.var.okropia.mechanics.Trigger;
 import ru.slipstream.var.okropia.mechanics.TriggerExecutor;
 
@@ -28,6 +29,7 @@ public class OkropiaServer extends Service {
     private long mLastUpdateTime;
     private FieldState mState;
     private TriggerExecutor mTriggerExecutor = new TriggerExecutor();
+    private BalanceDb mBalanceDb;
 
     private final Object lock = new Object();
 
@@ -68,9 +70,12 @@ public class OkropiaServer extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        L.d(getClass(), "run on create");
+        L.d(getClass(), "loading field objects");
+        mBalanceDb = new BalanceDb();
+        mBalanceDb.loadFieldObjects(this);
+        L.d(getClass(), "field objects loaded");
         mState = new FieldState();
-        mState.init();
+        mState.init(mBalanceDb);
         mTriggerExecutor.initTriggers(mState);
         Runnable r = new Runnable() {
             @Override

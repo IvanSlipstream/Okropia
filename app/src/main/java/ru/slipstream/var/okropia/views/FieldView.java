@@ -48,7 +48,7 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
             throw new UnsupportedOperationException("Context must implement "
                     +CommandReceiver.class.getSimpleName());
         }
-        init();
+        getHolder().addCallback(this);
     }
 
     public FieldView(Context context, AttributeSet attrs) {
@@ -58,19 +58,8 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
         } else {
             throw new UnsupportedOperationException("Context must implement "
                     +CommandReceiver.class.getSimpleName());
-        } // TODO: 03.06.2018 refactor copy-paste code
-        init();
-    }
-
-    private void init() {
-        // set handler for responses from drawing thread
-        getHolder().addCallback(this);
-        // attaching and initializing FieldState
-        mState = new FieldState();
-        mState.init();
-        // handle user clicks
-        mClicker = new Clicker(this);
-        setOnTouchListener(mClicker);
+        }
+        getHolder().addCallback(this); // TODO: 03.06.2018 refactor copy-paste code
     }
 
     public boolean sendCommand(int commandId, Bundle parameters){
@@ -112,6 +101,7 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        mState = new FieldState();
         mThread = new DrawThread(surfaceHolder);
         mThread.setRunning(true);
         mThread.start();

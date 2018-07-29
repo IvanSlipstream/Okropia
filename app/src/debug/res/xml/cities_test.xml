@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cities>
+    <city id="1" x="0.3f" y="0.7f">
+        <attribute type="string" name="name">Kiev</attribute>
+        <attribute type="float" name="loyalty">0.9f</attribute>
+        <attribute type="long" name="population">300000</attribute>
+        <attribute type="int" name="affiliation">1</attribute>
+    </city>
+</cities>
