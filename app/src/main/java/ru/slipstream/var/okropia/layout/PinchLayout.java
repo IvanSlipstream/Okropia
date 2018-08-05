@@ -87,7 +87,7 @@ public class PinchLayout extends FrameLayout
                     if (mStartX != 0 && mStartY != 0) {
                         float deltaX = (mStartX - motionEvent.getX(0)) / mScale / view.getWidth();
                         float deltaY = (mStartY - motionEvent.getY(0)) / mScale / view.getHeight();
-                        L.d(getClass(), "Motion: delta X="+deltaX+", delta Y="+deltaY);
+                        L.d(PinchLayout.class, "Motion: delta X="+deltaX+", delta Y="+deltaY);
                         if (deltaX > MAX_MOVEMENT && deltaY > MAX_MOVEMENT){
                             break;
                         }
