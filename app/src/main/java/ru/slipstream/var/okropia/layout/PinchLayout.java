@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import ru.slipstream.var.okropia.L;
 import ru.slipstream.var.okropia.R;
-import ru.slipstream.var.okropia.field.FieldState;
 import ru.slipstream.var.okropia.field.Location;
 import ru.slipstream.var.okropia.views.FieldView;
 
@@ -22,7 +21,7 @@ import ru.slipstream.var.okropia.views.FieldView;
 public class PinchLayout extends FrameLayout
         implements ScaleGestureDetector.OnScaleGestureListener, View.OnTouchListener {
 
-    private  static final float MAX_MOVEMENT = 20;
+    private  static final float MAX_MOVEMENT_PX = 20;
 
     private float mScale = 1;
     private ScaleGestureDetector mDetector;
@@ -85,10 +84,12 @@ public class PinchLayout extends FrameLayout
                         break;
                     }
                     if (mStartX != 0 && mStartY != 0) {
-                        float deltaX = (mStartX - motionEvent.getX(0)) / mScale / view.getWidth();
-                        float deltaY = (mStartY - motionEvent.getY(0)) / mScale / view.getHeight();
+                        float pxPointerShiftX = mStartX - motionEvent.getX(0);
+                        float pxPointerShiftY = mStartY - motionEvent.getY(0);
+                        float deltaX = pxPointerShiftX / mScale / view.getWidth();
+                        float deltaY = pxPointerShiftY / mScale / view.getHeight();
                         L.d(PinchLayout.class, "Motion: delta X="+deltaX+", delta Y="+deltaY);
-                        if (deltaX > MAX_MOVEMENT && deltaY > MAX_MOVEMENT){
+                        if (pxPointerShiftX > MAX_MOVEMENT_PX || pxPointerShiftY > MAX_MOVEMENT_PX){
                             break;
                         }
                         FieldView fieldView = findViewById(R.id.fv_main);
